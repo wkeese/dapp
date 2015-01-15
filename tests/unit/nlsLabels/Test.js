@@ -3,18 +3,13 @@ define([
 	"intern!object",
 	"intern/chai!assert",
 	"decor/sniff",
+	"dojo/when",
 	"dapp/Application",
 	"dapp/utils/view",
-	"dojo/Deferred",
 	"requirejs-text/text!dapp/tests/unit/nlsLabels/app.json",
 	"deliteful/LinearLayout",
 	"deliteful/ViewStack"
-], function (registerSuite, assert, has, Application, viewUtils, Deferred,
-	nlsLabelsconfig3) {
-	if (has("ie") === 10) {
-		console.log("Skipping nlsLabelsSuite tests on IE10");
-		return;
-	}
+], function (registerSuite, assert, has, when, Application, viewUtils, nlsLabelsconfig3) {
 	// -------------------------------------------------------------------------------------- //
 	// TODO: should add a nested nls test with strings at the parent view available to the child view.
 	// for nlsLabelsSuite transition test
@@ -38,9 +33,12 @@ define([
 		},
 		"test initial view and nls labels": function () {
 			this.timeout = 20000;
+			if (has("ie") === 10) {
+				this.skip();
+			}
 
-			var appStartedDef3 = new Application(JSON.parse(stripComments(nlsLabelsconfig3)), nlsLabelsContainer3);
-			return appStartedDef3.then(function (app) {
+			return when(new Application(JSON.parse(stripComments(nlsLabelsconfig3)), nlsLabelsContainer3)
+			.then(function (app) {
 				// we are ready to test
 				testApp = app;
 
@@ -68,13 +66,16 @@ define([
 				assert.strictEqual(testAppNlsLabelDom.innerHTML, "Label Zero", "testAppNlsLabel should be Label Zero");
 				assert.strictEqual(testViewNlsLabelDom.innerHTML, "Label One",
 					"testViewNlsLabelDom should be Label One");
-			});
+			}));
 		},
 
 		// Currently showing nlsLabelsAppHome1View test transition to nlsLabelsAppHome3NoControllerView
 		"nlsLabelsNode3.show(nlsLabelsAppHome3NoController)": function () {
 			this.timeout = 20000;
-			return nlsLabelsNode3.show("nlsLabelsAppHome3NoController").then(function () {
+			if (has("ie") === 10) {
+				this.skip();
+			}
+			return when(nlsLabelsNode3.show("nlsLabelsAppHome3NoController").then(function () {
 				var nlsLabelsAppHome3NoController = document.getElementById("nlsLabelsAppHome3NoController");
 				checkNodeVisibility(nlsLabelsNode3, nlsLabelsAppHome3NoController);
 
@@ -93,13 +94,15 @@ define([
 				assert.strictEqual(testAppNlsLabelDom.innerHTML, "Label Zero", "testAppNlsLabel should be Label Zero");
 				assert.strictEqual(testViewNlsLabelDom.innerHTML, "Label One",
 					"testViewNlsLabelDom should be Label One");
-			});
+			}));
 
 		},
 		teardown: function () {
 			// call unloadApp to cleanup and end the test
 			nlsLabelsContainer3.parentNode.removeChild(nlsLabelsContainer3);
-			testApp.unloadApp();
+			if (testApp) {
+				testApp.unloadApp();
+			}
 		}
 	};
 
