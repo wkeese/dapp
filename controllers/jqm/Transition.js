@@ -35,7 +35,7 @@ define(["dcl/dcl", "lie/dist/lie", "../TransitionBase", "../../utils/view",
 
 			// _hideView is called to hide a view
 			_hideView: function (viewTarget, event, isParent, viewPath) {
-				var hidePromise = new Promise(function (resolve) {
+				return new Promise(function (resolve) {
 					event.dapp.isParent = isParent;
 					event.dapp.hide = true;
 					event.dapp.viewPath = viewPath;
@@ -51,7 +51,6 @@ define(["dcl/dcl", "lie/dist/lie", "../TransitionBase", "../../utils/view",
 						return ui.options;
 					}.bind(this));
 				}.bind(this));
-				return hidePromise;
 			},
 
 			// _parentIsValid is called to see if p is valid and handle it if it is not
@@ -66,15 +65,17 @@ define(["dcl/dcl", "lie/dist/lie", "../TransitionBase", "../../utils/view",
 			},
 
 			// _showView is called to make the final call to show the view
-			_showView: function (p, subEvent, resolve) {
-				//$(":mobile-pagecontainer").pagecontainer("change", subEvent.dest, subEvent);
-				// body does not work, it is not the right div, it is not the pageContainer
-				//$( "body" ).pagecontainer( "change", subEvent.dest, subEvent);
-				$.mobile.pageContainer.pagecontainer("change", subEvent.dest, subEvent);
-				$(document).one("pagecontainertransition", function (complete, ui) {
-					//$(document).one("pagecontainershow", function (complete, ui) {
-					resolve(ui.options);
-					return ui.options;
+			_showView: function (p, subEvent) {
+				return new Promise(function (resolve) {
+					//$(":mobile-pagecontainer").pagecontainer("change", subEvent.dest, subEvent);
+					// body does not work, it is not the right div, it is not the pageContainer
+					//$( "body" ).pagecontainer( "change", subEvent.dest, subEvent);
+					$.mobile.pageContainer.pagecontainer("change", subEvent.dest, subEvent);
+					$(document).one("pagecontainertransition", function (complete, ui) {
+						//$(document).one("pagecontainershow", function (complete, ui) {
+						resolve(ui.options);
+						return ui.options;
+					});
 				});
 			}
 		});

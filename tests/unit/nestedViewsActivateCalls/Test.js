@@ -39,10 +39,15 @@ define([
 			// 															config has "parseOnLoad": true
 			nestedViewsActivateCallsNode1 = document.getElementById("nestedViewsActivateCallsApp1dviewStack");
 		},
+		beforeEach: function () {
+			return when(new Promise(function (resolve) {
+				setTimeout(resolve, 20);
+			}));
+		},
 		"test initial view": function () {
 			this.timeout = 20000;
 			if (has("ie") || has("ff") || has("safari")) {
-				this.skip();
+				this.skip("Skipping this test on IE, FF and safari.");
 			}
 			return when(new Application(JSON.parse(stripComments(nestedViewsActivateCallsconfig1)),
 					nestedViewsActivateCallsContainer1)
@@ -81,7 +86,7 @@ define([
 		"nestedViewsActivateCallsNode1.show(V7)": function () {
 			this.timeout = 20000;
 			if (has("ie") || has("ff") || has("safari")) {
-				this.skip();
+				this.skip("Skipping this test on IE, FF and safari.");
 			}
 			return when(nestedViewsActivateCallsNode1.show("V7").then(function () {
 				var nestedViewsActivateCallsApp1V7 = document.getElementById("V7");
@@ -105,7 +110,7 @@ define([
 		"nestedViewsActivateCallsNode1.show(P1) will show P1,S1,V1": function () {
 			this.timeout = 20000;
 			if (has("ie") || has("ff") || has("safari")) {
-				this.skip();
+				this.skip("Skipping this test on IE, FF and safari.");
 			}
 			return when(nestedViewsActivateCallsNode1.show("P1").then(function () {
 				var nestedViewsActivateCallsApp1V1 = document.getElementById("P1_S1_V1");
@@ -125,7 +130,7 @@ define([
 		"nestedViewsActivateCallsApp1S1View.containerNode.show('V2') will show P1,S1,V2": function () {
 			this.timeout = 20000;
 			if (has("ie") || has("ff") || has("safari")) {
-				this.skip();
+				this.skip("Skipping this test on IE, FF and safari.");
 			}
 			return when(nestedViewsActivateCallsApp1S1View.containerNode.show('V2').then(function () {
 				var nestedViewsActivateCallsApp1V2 = document.getElementById("P1_S1_V2");
@@ -151,7 +156,7 @@ define([
 		"testApp.showOrHideViews('V7')": function () {
 			this.timeout = 20000;
 			if (has("ie") || has("ff") || has("safari")) {
-				this.skip();
+				this.skip("Skipping this test on IE, FF and safari.");
 			}
 			return when(testApp.showOrHideViews('V7')
 				.then(function () {
@@ -180,7 +185,7 @@ define([
 		"testApp.showOrHideViews('P1') will show P1,S1,V1": function () {
 			this.timeout = 20000;
 			if (has("ie") || has("ff") || has("safari")) {
-				this.skip();
+				this.skip("Skipping this test on IE, FF and safari.");
 			}
 			return when(testApp.showOrHideViews('P1')
 				.then(function () {
@@ -206,10 +211,9 @@ define([
 		"test history.back() to get back to V7)": function () {
 			this.timeout = 20000;
 			if (has("ie") || has("ff") || has("safari")) {
-				this.skip();
+				this.skip("Skipping this test on IE, FF and safari.");
 			}
-			return when(new Promise(function (resolve) {
-				setupOnOncePromise(testApp, resolve);
+			return when(setupOnOncePromise(testApp, function () {
 				history.back();
 			}).then(function () {
 				var nestedViewsActivateCallsApp1V7 = document.getElementById("V7");
@@ -239,9 +243,6 @@ define([
 
 		teardown: function () {
 			// call unloadApp to cleanup and end the test
-			//	if (has("ie") || has("ff") || has("safari")) {
-			//		this.skip();
-			//	}
 			nestedViewsActivateCallsContainer1.parentNode.removeChild(nestedViewsActivateCallsContainer1);
 			if (testApp) {
 				testApp.unloadApp();
@@ -251,11 +252,14 @@ define([
 
 	registerSuite(nestedViewsActivateCallsSuite1);
 
-	function setupOnOncePromise(testApp, resolve) {
-		var signal = testApp.on("dapp-finished-transition", function (evt) {
-			resolve(evt);
-			signal.unadvise();
-		});
+	function setupOnOncePromise(testApp, stmts) {
+		return new Promise(function (resolve) {
+			stmts();
+			var signal = testApp.on("dapp-finished-transition", function (evt) {
+				resolve(evt);
+				signal.unadvise();
+			});
+		}.bind(this));
 	}
 
 	function checkNodeVisibility(vs, target) {

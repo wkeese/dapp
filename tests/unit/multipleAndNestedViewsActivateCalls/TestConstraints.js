@@ -3,6 +3,7 @@ define([
 	"intern!object",
 	"intern/chai!assert",
 	"decor/sniff",
+	"lie/dist/lie",
 	"dojo/when",
 	"dapp/Application",
 	"dapp/utils/view",
@@ -10,7 +11,7 @@ define([
 	"requirejs-text/text!dapp/tests/unit/multipleAndNestedViewsActivateCalls/app1Constraints.json",
 	"deliteful/LinearLayout",
 	"deliteful/ViewStack"
-], function (registerSuite, assert, has, when, Application, viewUtils, register,
+], function (registerSuite, assert, has, Promise, when, Application, viewUtils, register,
 	multipleAndNestedViewsActivateCallsconfig1) {
 
 	// -------------------------------------------------------------------------------------- //
@@ -43,15 +44,20 @@ define([
 				document.getElementById("multipleAndNestedViewsActivateCallsApp1linearlayout");
 
 		},
+		beforeEach: function () {
+			return when(new Promise(function (resolve) {
+				setTimeout(resolve, 20);
+			}));
+		},
 		"test initial view": function () {
 			this.timeout = 20000;
 			// multipleAndNestedViewsActivateCallsConstraintsSuite1 is having problems on IE10, IE11 and FF
 			if (has("ie") || has("ff")) {
-				this.skip();
+				this.skip("Skipping this test on IE and FF.");
 			}
 
 			return when(new Application(JSON.parse(stripComments(multipleAndNestedViewsActivateCallsconfig1)),
-					multipleAndNestedViewsActivateCallsContainer1).then(function (app) {
+				multipleAndNestedViewsActivateCallsContainer1).then(function (app) {
 				// we are ready to test
 				testApp = app;
 
@@ -77,7 +83,7 @@ define([
 			this.timeout = 20000;
 			// multipleAndNestedViewsActivateCallsConstraintsSuite1 is having problems on IE10, IE11 and FF
 			if (has("ie") || has("ff")) {
-				this.skip();
+				this.skip("Skipping this test on IE and FF.");
 			}
 			return when(multipleAndNestedViewsActivateCallsApp1Content.show("V7").then(function () {
 				//temp test works on IE but does not help on FF
@@ -113,7 +119,7 @@ define([
 			this.timeout = 20000;
 			// multipleAndNestedViewsActivateCallsConstraintsSuite1 is having problems on IE10, IE11 and FF
 			if (has("ie") || has("ff")) {
-				this.skip();
+				this.skip("Skipping this test on IE and FF.");
 			}
 			return when(multipleAndNestedViewsActivateCallsApp1Content.show("P1").then(function () {
 				var multipleAndNestedViewsActivateCallsApp1V1 = document.getElementById("contentCons_P1_S1_V1");
@@ -135,7 +141,7 @@ define([
 			this.timeout = 20000;
 			// multipleAndNestedViewsActivateCallsConstraintsSuite1 is having problems on IE10, IE11 and FF
 			if (has("ie") || has("ff")) {
-				this.skip();
+				this.skip("Skipping this test on IE and FF.");
 			}
 			return when(multipleAndNestedViewsActivateCallsApp1S1View.containerNode.show('V2').then(function () {
 				var multipleAndNestedViewsActivateCallsApp1V2 = document.getElementById("contentCons_P1_S1_V2");
@@ -164,7 +170,7 @@ define([
 			this.timeout = 20000;
 			// multipleAndNestedViewsActivateCallsConstraintsSuite1 is having problems on IE10, IE11 and FF
 			if (has("ie") || has("ff")) {
-				this.skip();
+				this.skip("Skipping this test on IE and FF.");
 			}
 			return when(testApp.showOrHideViews('contentCons,V7')
 				.then(function () {
@@ -196,7 +202,7 @@ define([
 			this.timeout = 20000;
 			// multipleAndNestedViewsActivateCallsConstraintsSuite1 is having problems on IE10, IE11 and FF
 			if (has("ie") || has("ff")) {
-				this.skip();
+				this.skip("Skipping this test on IE and FF.");
 			}
 			return when(testApp.showOrHideViews('contentCons,P1')
 				.then(function () {
@@ -225,7 +231,7 @@ define([
 			this.timeout = 20000;
 			// multipleAndNestedViewsActivateCallsConstraintsSuite1 is having problems on IE10, IE11 and FF
 			if (has("ie") || has("ff")) {
-				this.skip();
+				this.skip("Skipping this test on IE and FF.");
 			}
 			return when(multipleAndNestedViewsActivateCallsApp1Content.show('P2').then(function () {
 				var multipleAndNestedViewsActivateCallsApp1P2V1 = document.getElementById("contentCons_P2_P2S1_P2V1");
@@ -257,7 +263,7 @@ define([
 			this.timeout = 20000;
 			// multipleAndNestedViewsActivateCallsConstraintsSuite1 is having problems on IE10, IE11 and FF
 			if (has("ie") || has("ff")) {
-				this.skip();
+				this.skip("Skipping this test on IE and FF.");
 			}
 			return when(
 				document.getElementById("contentCons").parentNode.hide(document.getElementById("contentCons").id)
@@ -297,7 +303,7 @@ define([
 			this.timeout = 20000;
 			// multipleAndNestedViewsActivateCallsConstraintsSuite1 is having problems on IE10, IE11 and FF
 			if (has("ie") || has("ff")) {
-				this.skip();
+				this.skip("Skipping this test on IE and FF.");
 			}
 			return when(testApp.showOrHideViews('contentCons,P2,P2S1,P2V2')
 				.then(function () {
@@ -332,7 +338,7 @@ define([
 			this.timeout = 20000;
 			// multipleAndNestedViewsActivateCallsConstraintsSuite1 is having problems on IE10, IE11 and FF
 			if (has("ie") || has("ff")) {
-				this.skip();
+				this.skip("Skipping this test on IE and FF.");
 			}
 			return when(document.getElementById("contentCons_P2_P2S1").parentNode.hide(
 					document.getElementById("contentCons_P2_P2S1").id)

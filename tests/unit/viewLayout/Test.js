@@ -35,7 +35,7 @@ define([
 		"viewLayoutSuite dapp viewLayout test domNode sizes": function () {
 			this.timeout = 20000;
 			if (has("ie") === 10) {
-				this.skip();
+				this.skip("Skipping this test on IE10.");
 			}
 
 			// create the app from the config and wait for the promise
@@ -70,7 +70,7 @@ define([
 		"viewLayoutSuite dapp viewLayout hide viiew and test domNode sizes": function () {
 			this.timeout = 20000;
 			if (has("ie") === 10) {
-				this.skip();
+				this.skip("Skipping this test on IE10.");
 			}
 
 			return when(document.getElementById("viewLayoutAppdlayout").hide("viewLayoutAppHome2")

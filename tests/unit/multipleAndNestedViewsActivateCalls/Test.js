@@ -3,6 +3,7 @@ define([
 	"intern!object",
 	"intern/chai!assert",
 	"decor/sniff",
+	"lie/dist/lie",
 	"dojo/when",
 	"dapp/Application",
 	"dapp/utils/view",
@@ -10,7 +11,7 @@ define([
 	"requirejs-text/text!dapp/tests/unit/multipleAndNestedViewsActivateCalls/app1.json",
 	"deliteful/LinearLayout",
 	"deliteful/ViewStack"
-], function (registerSuite, assert, has, when, Application, viewUtils, register,
+], function (registerSuite, assert, has, Promise, when, Application, viewUtils, register,
 	multipleAndNestedViewsActivateCallsconfig1) {
 
 	// -------------------------------------------------------------------------------------- //
@@ -43,11 +44,16 @@ define([
 				document.getElementById("multipleAndNestedViewsActivateCallsApp1linearlayout");
 
 		},
+		beforeEach: function () {
+			return when(new Promise(function (resolve) {
+				setTimeout(resolve, 20);
+			}));
+		},
 		"test multiple and nested Views activation calls": function () {
 			this.timeout = 20000;
 			// multipleAndNestedViewsActivateCalls is having problems on IE10, IE11 and FF
 			if (has("ie") || has("ff")) {
-				this.skip();
+				this.skip("Skipping this test on IE and FF.");
 			}
 
 			return when(new Application(JSON.parse(stripComments(multipleAndNestedViewsActivateCallsconfig1)),
@@ -122,25 +128,25 @@ define([
 				.then(function () {
 					return when(multipleAndNestedViewsActivateCallsApp1S1View.containerNode.show('V2')
 						.then(function () {
-						var multipleAndNestedViewsActivateCallsApp1V2 = document.getElementById("content_P1_S1_V2");
-						checkNestedNodeVisibility(multipleAndNestedViewsActivateCallsApp1Content,
-							multipleAndNestedViewsActivateCallsApp1V2);
+							var multipleAndNestedViewsActivateCallsApp1V2 = document.getElementById("content_P1_S1_V2");
+							checkNestedNodeVisibility(multipleAndNestedViewsActivateCallsApp1Content,
+								multipleAndNestedViewsActivateCallsApp1V2);
 
-						multipleAndNestedViewsActivateCallsApp1V2View = viewUtils.getViewFromViewId(testApp,
-							"content_P1_S1_V2");
+							multipleAndNestedViewsActivateCallsApp1V2View = viewUtils.getViewFromViewId(testApp,
+								"content_P1_S1_V2");
 
-						// Now multipleAndNestedViewsActivateCallsApp1V1View ActivateCallCounts should be 1
-						checkActivateCallCount(multipleAndNestedViewsActivateCallsApp1V2View, 1);
-						checkActivateCallCount(multipleAndNestedViewsActivateCallsApp1V1View, 2, true);
-						checkActivateCallCount(multipleAndNestedViewsActivateCallsApp1S1View, 3);
-						checkActivateCallCount(multipleAndNestedViewsActivateCallsApp1P1View, 3);
+							// Now multipleAndNestedViewsActivateCallsApp1V1View ActivateCallCounts should be 1
+							checkActivateCallCount(multipleAndNestedViewsActivateCallsApp1V2View, 1);
+							checkActivateCallCount(multipleAndNestedViewsActivateCallsApp1V1View, 2, true);
+							checkActivateCallCount(multipleAndNestedViewsActivateCallsApp1S1View, 3);
+							checkActivateCallCount(multipleAndNestedViewsActivateCallsApp1P1View, 3);
 
-						// Now multipleAndNestedViewsActivateCallsApp1V1View DeactivateCallCounts should be 1
-						checkDeactivateCallCount(multipleAndNestedViewsActivateCallsApp1V7View, 1);
-						checkDeactivateCallCount(multipleAndNestedViewsActivateCallsApp1V1View, 2);
-						checkDeactivateCallCount(multipleAndNestedViewsActivateCallsApp1S1View, 2, true);
-						checkDeactivateCallCount(multipleAndNestedViewsActivateCallsApp1P1View, 2, true);
-					}));
+							// Now multipleAndNestedViewsActivateCallsApp1V1View DeactivateCallCounts should be 1
+							checkDeactivateCallCount(multipleAndNestedViewsActivateCallsApp1V7View, 1);
+							checkDeactivateCallCount(multipleAndNestedViewsActivateCallsApp1V1View, 2);
+							checkDeactivateCallCount(multipleAndNestedViewsActivateCallsApp1S1View, 2, true);
+							checkDeactivateCallCount(multipleAndNestedViewsActivateCallsApp1P1View, 2, true);
+						}));
 				})
 				// Currently showing P1_S1_V2 test transition to V7
 				.then(function () {
