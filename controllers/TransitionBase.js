@@ -53,16 +53,12 @@ define(["dcl/dcl", "lie/dist/lie", "../Controller", "../utils/view"],
 					this._displayView(viewPaths[i].dest, event, false, viewPaths[i]);
 				i++;
 				if (i < viewPaths.length) { // need to wait before loading the next views.
-					dispViewDef.then(function () {
-						dispViewDef = self._loadViewsInOrder(viewPaths, i, event, syncResolve);
+					return dispViewDef.then(function () {
+						return self._loadViewsInOrder(viewPaths, i, event);
 					});
 				} else {
-					dispViewDef.then(function (value) {
-						syncResolve(value);
-					});
+					return dispViewDef;
 				}
-				return syncResolve;
-
 			},
 
 			_handleMultipleViewParts: function (event) {
@@ -71,9 +67,7 @@ define(["dcl/dcl", "lie/dist/lie", "../Controller", "../utils/view"],
 				var self = this;
 				if (viewPaths) {
 					if (this.app.loadViewsInOrder || viewPaths[0].loadViewsInOrder) {
-						promises.push(new Promise(function (syncresolve) {
-							this._loadViewsInOrder(viewPaths, 0, event, syncresolve);
-						}.bind(this)));
+						promises.push(this._loadViewsInOrder(viewPaths, 0, event));
 					} else {
 						var i = 0;
 						while (i < viewPaths.length) {
@@ -84,11 +78,9 @@ define(["dcl/dcl", "lie/dist/lie", "../Controller", "../utils/view"],
 							i++;
 							// need to wait before loading the next views if loadViewsInOrder is set.
 							if (i < viewPaths.length && viewPaths[i].loadViewsInOrder) {
-								promises.push(new Promise(function (syncresolve2) {
-									displayViewPromise.then(function () {
-										self._loadViewsInOrder(viewPaths, i, event, syncresolve2);
-									});
-								}.bind(this)));
+								promises.push(displayViewPromise.then(function () {
+									return self._loadViewsInOrder(viewPaths, i, event)
+								}));
 								break;
 							}
 						}
